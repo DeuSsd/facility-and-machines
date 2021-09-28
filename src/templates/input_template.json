@@ -1,0 +1,47 @@
+{
+    "Count of Machine" : 3,
+    "List of machine":
+    [
+        {
+            "Name of machine" : "name1",
+            "Amount of confgs" : 2,
+            "machines":
+            [
+                {
+                    "h" : 2,
+                    "w" : 3
+                },
+                {
+                    "h" : 4,
+                    "w" : 5
+                },
+            ]
+        },
+        {
+            "Name of machine" : "name1",
+            "Amount of confgs" : 2,
+            "machines":
+            [
+                {
+                    "h" : 2,
+                    "w" : 3
+                },
+                {
+                    "h" : 4,
+                    "w" : 5
+                },
+            ]
+        },
+        {
+            "Name of machine" : "name1",
+            "Amount of confgs" : 1,
+            "machines":
+            [
+                {
+                    "h" : 2,
+                    "w" : 3
+                }
+            ]
+        }
+    ]
+}
