@@ -14,6 +14,7 @@ class Object:
         self.h = h
         self.w = w
         self.__square = 0
+        self.__count_square()
 
     def get_coors(self):
         """
