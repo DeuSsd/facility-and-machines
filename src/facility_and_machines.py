@@ -57,13 +57,54 @@ class Object:
         self.__count_square()
         return self.__square
 
+
 class Machine(Object):
     """
     Class of Machine.
     """
 
-    def __init__(self, x=0, y=0, h=0, w=0):
+    def __init__(self, title, x=0, y=0, h=0, w=0):
         super().__init__(x=x, y=y, h=h, w=w)
+        self.title = title
+
+
+class CollectionOfMachines:
+    """
+    Class which store all machines and them configs
+    access by every machine provided by a key called "title"
+    """
+
+    def __init__(self):
+        self.__machines = dict()
+
+    def __len__(self):
+        return self.__machines.__len__()
+
+    def append_new_machine(self, machine: Machine):
+        """
+        Method for appending a new machine in the collection
+        struct of collection present below:
+        {
+            "M1" : [Machine.M1 shape h1 x w1, Machine.M1 shape h2 x w2],
+            "M2" : [Machine.M2 shape h1 x w1, Machine.M2 shape h2 x w2, Machine.M2 shape h3 x w3]
+            "M3" : [Machine.M3 shape h1 x w1]
+        }
+        :param machine: instance of class Machine
+        :return: None
+        """
+        # Create list if doesn't exist earlier
+        if self.__check_exist_this_machine(machine):
+            self.__machines[machine.title].append(machine)
+        else:
+            self.__machines[machine.title] = [machine]
+
+    def __check_exist_this_machine(self, machine: Machine) -> bool:
+        """
+        Method check exist this type of machine in collection
+        :param machine: instance of class Machine
+        :return: bool type of answer exist or not [True / False]
+        """
+        return machine.title in self.__machines.keys()
 
 
 class Facility(Object):
@@ -78,7 +119,6 @@ class Facility(Object):
         super().__init__(x=x, y=y, h=h, w=w)
         self.__square = 0
         self.list_of_machine = []  # TODO может буду инкапсулирвоать
-
 
     def append_new_machine(self, machine: Machine):
         """
