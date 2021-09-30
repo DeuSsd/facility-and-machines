@@ -37,17 +37,17 @@ def process_all_machines_from_json(machines_json: dict) -> CollectionOfMachines:
     return machines_collections
 
 
-def load_machine_from_json(file_path: str) -> CollectionOfMachines:
+def load_machines_from_json(file_path: str) -> CollectionOfMachines:
     """
     Read JSON config file of all machines and process them to collection of object
     :param file_path: full path file to JSON input.json
     :return: collection of all machines and them configs zip in CollectionOfMachines
     """
-    json_machines = read_josn(path)
-    collection_of_machines = process_all_machines_from_json()
+    json_machines = read_josn(file_path)
+    collection_of_machines = process_all_machines_from_json(json_machines)
     return collection_of_machines
 
 if __name__ == "__main__":
     path = "U:/facility-and-machines/input.json"
-    MM = load_machine_from_json(path)
+    MM = load_machines_from_json(path)
     print(len(MM))

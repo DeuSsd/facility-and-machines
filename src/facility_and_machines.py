@@ -76,10 +76,10 @@ class CollectionOfMachines:
     """
 
     def __init__(self):
-        self.__machines = dict()
+        self.machines = dict()
 
     def __len__(self):
-        return self.__machines.__len__()
+        return self.machines.__len__()
 
     def append_new_machine(self, machine: Machine):
         """
@@ -95,9 +95,9 @@ class CollectionOfMachines:
         """
         # Create list if doesn't exist earlier
         if self.__check_exist_this_machine(machine):
-            self.__machines[machine.title].append(machine)
+            self.machines[machine.title].append(machine)
         else:
-            self.__machines[machine.title] = [machine]
+            self.machines[machine.title] = [machine]
 
     def __check_exist_this_machine(self, machine: Machine) -> bool:
         """
@@ -105,7 +105,10 @@ class CollectionOfMachines:
         :param machine: instance of class Machine
         :return: bool type of answer exist or not [True / False]
         """
-        return machine.title in self.__machines.keys()
+        return machine.title in self.machines.keys()
+
+    def empty(self):
+        return bool(self.machines)
 
 
 class Facility(Object):
@@ -128,6 +131,44 @@ class Facility(Object):
         :return:
         """
         self.list_of_machine.append(machine)
+
+    def __copy__(self):
+        copy = Facility()
+        copy.list_of_machine = self.list_of_machine.copy()
+        return copy
+
+    def copy(self):
+        return self.__copy__()
+
+
+class CollectionOfFacilities:
+    def __init__(self):
+        self.__collection_of_facilities = []
+
+    def append_new_facility_variate(self, facility_variate: Facility):
+        """
+        Append a new instance of class Machine to the list of already existing rectangles objects
+        :param machine: instance of class Machine
+        :return:
+        """
+        self.__collection_of_facilities.append(facility_variate)
+
+    def show(self):
+        for item in self.__collection_of_facilities:
+            for el in item.list_of_machine:
+                print(el.title, el.h, el.w)
+
+    # def create_collection(self,collection_of_machines:CollectionOfMachines):
+    #     list_of_titles = collection_of_machines.machines.keys()
+
+
+
+    # def _bruteforce(self,list_of_titles:list,collection_of_machines:CollectionOfMachines):
+    #     facility_combination = Facility()
+    #     for title in list_of_titles:
+    #         facility_combination.append_new_machine(collection_of_machines.machines[title])
+    #         collection_of_machines
+    #         self.collection_of_facilities.append()
 
 
 if __name__ == "__main__":
