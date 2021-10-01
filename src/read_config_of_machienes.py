@@ -2,7 +2,7 @@ from json import load
 from src.facility_and_machines import Machine,CollectionOfMachines
 
 
-def read_josn(file_path: str) -> dict:
+def read_json(file_path: str) -> dict:
     """
     Load json data from file_path
     :param file_path: full path where store input.json
@@ -43,7 +43,7 @@ def load_machine_from_json(file_path: str) -> CollectionOfMachines:
     :param file_path: full path file to JSON input.json
     :return: collection of all machines and them configs zip in CollectionOfMachines
     """
-    json_machines = read_josn(path)
+    json_machines = read_json(path)
     collection_of_machines = process_all_machines_from_json()
     return collection_of_machines
 
