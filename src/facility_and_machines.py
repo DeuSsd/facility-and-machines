@@ -14,7 +14,7 @@ class Object:
         self.h = h
         self.w = w
         self.__square = 0
-        self.__count_square()
+        self.__calculate_square()
 
     def get_coors(self):
         """
@@ -38,15 +38,28 @@ class Object:
         """
         self.__coors = coors
 
-    def __count_square(self):
+    def get_sides(self):
+        """
+        Return pair of rectangle's sides
+            --------------
+        h   |            |
+            |            |
+            --------------
+                  w
+        :return:(h,w)
+        """
+
+        return self.h, self.w
+
+    def __calculate_square(self) -> None:
         """
         Count value of square rectangle
             ---------------
         h   |             |
-            |             |
+            | S = h * w   |
             --------------
                   w
-        :return: S = h * w
+        :return:
         """
         self.__square = self.h * self.w
 
@@ -55,8 +68,26 @@ class Object:
         Recount value of square rectangle and return them
         :return: value of square rectangle
         """
-        self.__count_square()
+        self.__calculate_square()
         return self.__square
+
+    def process_mounting_points(self):
+        """
+        Add new point
+
+            this point 1 (x1,y1)
+            |
+            o--------------
+        h   |             |
+            |             |
+            --------------o  <- this point 2 (x2,y2)
+                w
+        :return: (x1,y1),(x2,y2)
+        """
+        x, y = self.__coors
+        point_1 = (x + self.h, y)
+        point_2 = (x, y + self.w)
+        return point_1, point_2
 
 
 class Machine(Object):
@@ -93,6 +124,7 @@ class CollectionOfMachines:
         :param machine: instance of class Machine
         :return: None
         """
+        
         # Create list if doesn't exist earlier
         if self.__check_exist_this_machine(machine):
             self.machines[machine.title].append(machine)
@@ -123,18 +155,61 @@ class Facility(Object):
         super().__init__(x=x, y=y, h=h, w=w)
         self.__square = 0
         self.list_of_machine = []  # TODO может буду инкапсулирвоать
+        self.__list_of_mounting_points = set()  # TODO проверить расположение объекта /
+        self.__append_new_mounting_point(self.get_coors())
 
-    def append_new_machine(self, machine: Machine):
+    def __lt__(self, other):
+        return self.get_square() < other.get_square()
+
+    def get_all_mounting_points(self):
+        return self.__list_of_mounting_points
+
+    def set_all_mounting_points(self, mounting_points : [tuple]):
+        self.__list_of_mounting_points = mounting_points.copy()
+
+    def append_new_machine(self, new_coors: tuple, machine: Machine):
         """
         Append a new instance of class Machine to the list of already existing rectangles objects
+        :param new_coors:
         :param machine: instance of class Machine
         :return:
         """
+        self.__place_machine(new_coors, machine)  # TODO check changes
         self.list_of_machine.append(machine)
+        self.__find_new_mounting_points(machine)
+        self.__calculate_new_sides(machine)
+        self.get_square()
+
+    def __append_new_mounting_point(self, new_coors: tuple):
+        self.__list_of_mounting_points.add(new_coors)
+
+    def __place_machine(self, new_coors: tuple, machine: Machine):
+        machine.set_coors(new_coors)
+        self.__list_of_mounting_points.discard(new_coors)
+        return machine  # TODO check changes, maybe need deleted
+
+    def __find_new_mounting_points(self, machine: Machine):
+        point_1, point_2 = machine.process_mounting_points()
+        self.__append_new_mounting_point(point_1)
+        self.__append_new_mounting_point(point_2)
+
+    def __update_sides(self, h, w):
+        if h > self.h:
+            self.h = h
+        if w > self.w:
+            self.w = w
+
+    def __calculate_new_sides(self, machine: Machine):  # TODO check changes
+        x, y = machine.get_coors()
+        h, w = machine.get_sides()
+        h += y
+        w += x
+        self.__update_sides(h=h, w=w)
 
     def __copy__(self):
         copy = Facility()
         copy.list_of_machine = self.list_of_machine.copy()
+        copy.set_all_mounting_points(self.__list_of_mounting_points)
         return copy
 
     def copy(self):
@@ -145,31 +220,28 @@ class CollectionOfFacilities:
     def __init__(self):
         self.__collection_of_facilities = []
 
-    def append_new_facility_variate(self, facility_variate: Facility):
+    def sort(self):
+        self.__collection_of_facilities.sort()
+
+    def append_new_facility(self, facility: Facility):
         """
         Append a new instance of class Machine to the list of already existing rectangles objects
-        :param machine: instance of class Machine
+        :param facility: instance of class Machine
         :return:
         """
-        self.__collection_of_facilities.append(facility_variate)
+        self.__collection_of_facilities.append(facility)
 
     def show(self):
         for item in self.__collection_of_facilities:
+            print(";")
             for el in item.list_of_machine:
-                print(el.title, el.h, el.w)
+                print(el.title, el.h, el.w,el.get_coors())
 
-    # def create_collection(self,collection_of_machines:CollectionOfMachines):
-    #     list_of_titles = collection_of_machines.machines.keys()
+    # def __del__(self): #TODO maybe should realise
 
-
-
-    # def _bruteforce(self,list_of_titles:list,collection_of_machines:CollectionOfMachines):
-    #     facility_combination = Facility()
-    #     for title in list_of_titles:
-    #         facility_combination.append_new_machine(collection_of_machines.machines[title])
-    #         collection_of_machines
-    #         self.collection_of_facilities.append()
-
+    def get_best_choose(self):
+        self.__collection_of_facilities.sort()
+        return self.__collection_of_facilities.pop(0)
 
 if __name__ == "__main__":
     a = Facility(x=1, y=2, h=2, w=4)
