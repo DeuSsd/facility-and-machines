@@ -10,13 +10,13 @@ class Object:
     """
 
     def __init__(self, x=0, y=0, h=0, w=0):
-        self.__coors = (x, y)
+        self.__coors: tuple = (x, y)
         self.h = h
         self.w = w
         self.__square = 0
         self.__calculate_square()
 
-    def get_coors(self):
+    def get_coors(self) -> tuple:
         """
         Return pair of coordinates of the lower left corner of the rectangle
                            ---------------
@@ -25,6 +25,7 @@ class Object:
         this dot (x,y)->   o -------------
         :return:(x,y)
         """
+        # print(self.__coors, id(self.__coors))
         return self.__coors
 
     def set_coors(self, coors: tuple) -> None:
@@ -75,19 +76,24 @@ class Object:
         """
         Add new point
 
-            this point 1 (x1,y1)
-            |
-            o--------------
-        h   |             |
-            |             |
-            --------------o  <- this point 2 (x2,y2)
-                w
+        y
+       |     this point 1 (x1,y1)  x1 = x, y1 = y+h
+       |     |
+       |     o--------------
+       | h   |             |
+       |     |             |
+       |     --------------o  <- this point 2 (x2,y2)  x2 = x+w, y2 = y
+       |         w
+       0--------------------------------> x
         :return: (x1,y1),(x2,y2)
         """
         x, y = self.__coors
-        point_1 = (x + self.h, y)
-        point_2 = (x, y + self.w)
+        point_1 = (x + self.w, y)
+        point_2 = (x, y + self.h)
         return point_1, point_2
+
+    def show(self):
+        print(id(self), self.get_coors(), self.get_sides(), self.get_square(), type(self))
 
 
 class Machine(Object):
@@ -98,6 +104,24 @@ class Machine(Object):
     def __init__(self, title, x=0, y=0, h=0, w=0):
         super().__init__(x=x, y=y, h=h, w=w)
         self.title = title
+
+    def get_info(self):
+        print(self.title, self.get_coors(), self.get_sides())
+
+    def __copy__(self):
+        x, y = self.get_coors()
+        copy = Machine(
+            title=self.title,
+            x=x,
+            y=y,
+            h=self.h,
+            w=self.w
+        )
+        # print(id(copy.get_coors()),id(self.get_coors()))
+        return copy
+
+    def copy(self):
+        return self.__copy__()
 
 
 class CollectionOfMachines:
@@ -124,7 +148,8 @@ class CollectionOfMachines:
         :param machine: instance of class Machine
         :return: None
         """
-        
+
+        # print(machine, type(machine), id(machine))
         # Create list if doesn't exist earlier
         if self.__check_exist_this_machine(machine):
             self.machines[machine.title].append(machine)
@@ -154,9 +179,12 @@ class Facility(Object):
     def __init__(self, x=0, y=0, h=0, w=0):
         super().__init__(x=x, y=y, h=h, w=w)
         self.__square = 0
-        self.list_of_machine = []  # TODO может буду инкапсулирвоать
-        self.__list_of_mounting_points = set()  # TODO проверить расположение объекта /
+        self.list_of_machine: [Machine] = []  # TODO может буду инкапсулирвоать
+        self.__list_of_mounting_points: {tuple} = set()  # TODO проверить расположение объекта /
         self.__append_new_mounting_point(self.get_coors())
+
+    def get_info(self):
+        print(self.list_of_machine.__len__(), self.get_sides(), self.get_square())
 
     def __lt__(self, other):
         return self.get_square() < other.get_square()
@@ -164,7 +192,7 @@ class Facility(Object):
     def get_all_mounting_points(self):
         return self.__list_of_mounting_points
 
-    def set_all_mounting_points(self, mounting_points : [tuple]):
+    def set_all_mounting_points(self, mounting_points: [tuple]):
         self.__list_of_mounting_points = mounting_points.copy()
 
     def append_new_machine(self, new_coors: tuple, machine: Machine):
@@ -174,11 +202,14 @@ class Facility(Object):
         :param machine: instance of class Machine
         :return:
         """
-        self.__place_machine(new_coors, machine)  # TODO check changes
-        self.list_of_machine.append(machine)
-        self.__find_new_mounting_points(machine)
-        self.__calculate_new_sides(machine)
+        copy_machine = machine.copy()
+        self.__place_machine(new_coors, copy_machine)  # TODO check changes
+        self.list_of_machine.append(copy_machine)
+        self.__find_new_mounting_points(copy_machine)
+        self.__calculate_new_sides(copy_machine)
         self.get_square()
+        # machine.show()
+        # self.show()
 
     def __append_new_mounting_point(self, new_coors: tuple):
         self.__list_of_mounting_points.add(new_coors)
@@ -207,8 +238,9 @@ class Facility(Object):
         self.__update_sides(h=h, w=w)
 
     def __copy__(self):
-        copy = Facility()
-        copy.list_of_machine = self.list_of_machine.copy()
+        copy = Facility(h=self.h, w=self.w)
+        for item in self.list_of_machine:
+            copy.list_of_machine.append(item.copy())
         copy.set_all_mounting_points(self.__list_of_mounting_points)
         return copy
 
@@ -233,15 +265,17 @@ class CollectionOfFacilities:
 
     def show(self):
         for item in self.__collection_of_facilities:
-            print(";")
+            print("")
             for el in item.list_of_machine:
-                print(el.title, el.h, el.w,el.get_coors())
+                print(el.title, el.h, el.w, el.get_coors())
+            # item.show()
 
     # def __del__(self): #TODO maybe should realise
 
     def get_best_choose(self):
         self.__collection_of_facilities.sort()
         return self.__collection_of_facilities.pop(0)
+
 
 if __name__ == "__main__":
     a = Facility(x=1, y=2, h=2, w=4)
