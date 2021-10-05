@@ -43,6 +43,7 @@ def load_machines_from_json(file_path: str) -> CollectionOfMachines:
     :param file_path: full path file to JSON input.json
     :return: collection of all machines and them configs zip in CollectionOfMachines
     """
+
     json_machines = read_json(file_path)
     collection_of_machines = process_all_machines_from_json(json_machines)
     return collection_of_machines
