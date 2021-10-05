@@ -95,6 +95,58 @@ class Object:
     def show(self):
         print(id(self), self.get_coors(), self.get_sides(), self.get_square(), type(self))
 
+    def get_all_corner_coors(self) -> [tuple]:
+        '''
+        ld_point - left-down point
+        lu_point - left-up point
+        rd_point - right-down point
+        ru_point - right-up point
+
+        y
+        |     this lu_point (x1,y1)  x1 = x, y1 = y+h
+        |     |
+        |     o-------------o <- this ru_point (x3,y3)  x3 = x+w, y3 = y+h
+        | h   |             |
+        |     |             |
+        |     o-------------o  <- this rd_point(x2,y2)  x2 = x+w, y2 = y
+        |         w
+        0--------------------------------> x
+        :return: list of corners point [LD, LU, RD, RU]
+        '''
+        x, y = self.get_coors()
+        ld_point = (x, y)
+        lu_point = (x, y + self.h)
+        rd_point = (x + self.w, y)
+        ru_point = (x + self.w, y + self.h)
+        return [ld_point, lu_point, rd_point, ru_point]
+
+    def check_entry_into_rectangle(self, list_of_point: [tuple]) -> bool:
+        """
+          y
+        |
+        |
+        |     o-------------o          bounders:
+        | h   |             |          x < x_t < x+w
+        |     | (x,y)       |         y < y_t < y+h
+        |     o-------------o
+        |         w
+        0--------------------------------> x
+
+        :param list_of_point: list of corners point [LD, LU, RD, RU]
+        :return: if any point included, then return true
+        """
+
+        x, y = self.get_coors()  # (x,y)
+        for point in list_of_point:
+            x_t, y_t = point
+            if (x_t > x and x_t < x + self.w) and \
+                    (y_t > y and y_t < y + self.h):
+                return True
+        return False
+
+
+
+
 
 class Machine(Object):
     """
@@ -202,6 +254,7 @@ class Facility(Object):
         :param machine: instance of class Machine
         :return:
         """
+        #TODO if included, then interrupt
         copy_machine = machine.copy()
         self.__place_machine(new_coors, copy_machine)  # TODO check changes
         self.list_of_machine.append(copy_machine)
@@ -278,6 +331,7 @@ class CollectionOfFacilities:
 
 
 if __name__ == "__main__":
-    a = Facility(x=1, y=2, h=2, w=4)
-    print(a.get_square())
-    print(a.get_coors())
+    a = Machine("M", x=0,y=0,h=2,w=3)
+    b = Machine("M", x=-3,y=0,h=2,w=3)
+    t = a.check_entry_into_rectangle(b.get_all_corner_coors())
+    print(t)
