@@ -9,7 +9,8 @@
     <div class="px-5 container-xxl">
         <svg width="800" height="600">
             {% for machine in dataset["List of machines"] %}
-            <rect x="{{ machine['x'] }}" y="{{ machine['y'] }}" height="{{ machine['h'] }}" width="{{ machine['w'] }}"
+            <rect x="{{ machine['x'] * 800/dataset['Facility']['h'] }}" y="{{ machine['y'] * 800/dataset['Facility']['h'] }}"
+                  height="{{ machine['h'] * 800/dataset['Facility']['h'] }}" width="{{ machine['w'] * 800/dataset['Facility']['h'] }}"
                  style="fill:rgb({{ randint(50,200) }}, {{ randint(50,200) }}, {{ randint(50,200) }})
                         ;stroke:black;stroke-width:0.5;opacity:0.5" />
             {% endfor %}

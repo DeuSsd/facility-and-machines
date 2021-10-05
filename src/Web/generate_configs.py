@@ -1,5 +1,6 @@
 import json
 from random import randint
+from math import modf
 
 
 def generateRandomConfigs(jsonName="test", numMachines="1", maxNumConf="5"):
@@ -10,12 +11,15 @@ def generateRandomConfigs(jsonName="test", numMachines="1", maxNumConf="5"):
     for i in range(int(numMachines)):
         randAmount = randint(1, int(maxNumConf))
         machine = {"Title of machine": "M" + str(i), "Amount of configs": randAmount, "Machines": list()}
-        rh = randint(1, 15)  # Точно ли нормально от 0 до 10
+        rh = randint(1, 15)
         rw = randint(1, 15)
         rS = rh * rw
         for machineCount in range(randAmount):
-            rh = randint(1, 15)
-            rw = rS / rh
+            while True:
+                rh = randint(1, 15)
+                rw = rS / rh
+                if type(rw) == int():
+                    break
             machine["Machines"].append({"h": rh, "w": rw})
         configs["List os machine"].append(machine)
 

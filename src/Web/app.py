@@ -20,9 +20,11 @@ def index():
     if request.method == 'POST':
         if "solution" in request.form:
             # Где-то тут надо получить результирующий json
-            # datasetName =
-            json = read_json("ConfigPacks/" + request.form['datasetName'])
-            return render_template('result.html', dataset=json, randint=randint)
+            # datasetName =request.form['datasetName']
+            # json = read_json("ConfigPacks/" + request.form['datasetName'])
+            json = read_json(request.form['datasetName'])
+            k = float()
+            return render_template('result.html', dataset=json, randint=randint, k=k)
         elif "create" in request.form:
             generateRandomConfigs(request.form['ConfigurationPackName'],
                                   request.form['NumberOfMachines'],
