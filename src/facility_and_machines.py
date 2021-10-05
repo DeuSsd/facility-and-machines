@@ -113,6 +113,7 @@ class Object:
         0--------------------------------> x
         :return: list of corners point [LD, LU, RD, RU]
         '''
+
         x, y = self.get_coors()
         ld_point = (x, y)
         lu_point = (x, y + self.h)
@@ -143,9 +144,6 @@ class Object:
                     (y_t > y and y_t < y + self.h):
                 return True
         return False
-
-
-
 
 
 class Machine(Object):
@@ -254,13 +252,16 @@ class Facility(Object):
         :param machine: instance of class Machine
         :return:
         """
-        #TODO if included, then interrupt
+        # TODO if included, then interrupt
         copy_machine = machine.copy()
-        self.__place_machine(new_coors, copy_machine)  # TODO check changes
-        self.list_of_machine.append(copy_machine)
-        self.__find_new_mounting_points(copy_machine)
-        self.__calculate_new_sides(copy_machine)
-        self.get_square()
+        self.__place_machine(new_coors, copy_machine)  # TODO refactor this function: delete and add same coors
+        if not self.__collision_detect(copy_machine):
+            self.list_of_machine.append(copy_machine)
+            self.__find_new_mounting_points(copy_machine)
+            self.__calculate_new_sides(copy_machine)
+            self.get_square()
+        else:
+            self.__list_of_mounting_points.add(new_coors)
         # machine.show()
         # self.show()
 
@@ -300,6 +301,12 @@ class Facility(Object):
     def copy(self):
         return self.__copy__()
 
+    def __collision_detect(self, new_machine: Machine) -> bool:
+        corners_list = new_machine.get_all_corner_coors()
+        for machine in self.list_of_machine:
+            if machine.check_entry_into_rectangle(corners_list):
+                return True
+        return False
 
 class CollectionOfFacilities:
     def __init__(self):
@@ -331,7 +338,7 @@ class CollectionOfFacilities:
 
 
 if __name__ == "__main__":
-    a = Machine("M", x=0,y=0,h=2,w=3)
-    b = Machine("M", x=-3,y=0,h=2,w=3)
+    a = Machine("M", x=0, y=0, h=2, w=3)
+    b = Machine("M", x=-3, y=0, h=2, w=3)
     t = a.check_entry_into_rectangle(b.get_all_corner_coors())
     print(t)

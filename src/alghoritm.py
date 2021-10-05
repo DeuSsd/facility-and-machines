@@ -1,15 +1,12 @@
-from src.read_config_of_machienes import load_machines_from_json
-from src.facility_and_machines import Machine, CollectionOfMachines, Facility, CollectionOfFacilities
+from src.facility_and_machines import Machine, Facility, CollectionOfFacilities, CollectionOfMachines
 
 
-def main(file_path: str):
-    machine_list = load_machines_from_json(file_path)
+def optimize(machine_list: CollectionOfMachines) -> Facility:
     machines_name = list(machine_list.machines.keys())
     title = machines_name[0]
     machines_configs = machine_list.machines.pop(title)
     collection_of_facilites = CollectionOfFacilities()
     for config in machines_configs:
-
         # config.get_info() ####
 
         best_facility = Facility()
@@ -88,10 +85,9 @@ def find_best_facility_place(config: Machine, facility: Facility):
 
 if __name__ == '__main__':
     path = "U:/facility-and-machines/input.json"
-    facilitys = main(path)
-    facilitys.show()
+    # facilitys = optimize(path)
+    # facilitys.show()
     # item = facilitys
     # for el in item.list_of_machine:
     # print(el.title, el.h, el.w, el.get_coors())
     # item.show()
-
