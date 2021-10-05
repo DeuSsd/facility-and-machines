@@ -34,6 +34,13 @@ def process_all_machines_to_json(facility: Facility) -> dict:
         }
         list_of_machine.append(machine_json)
     json_data["List of machines"] = list_of_machine
+    x, y = facility.get_coors()
+    json_data["Facility"] = {
+        "x": x,
+        "y": y,
+        "h": facility.h,
+        "w": facility.w
+    }
     return json_data
 
 
