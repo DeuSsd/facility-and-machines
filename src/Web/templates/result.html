@@ -1,11 +1,25 @@
 {% extends 'base.html' %}
 
+
 {% block content %}
 <title>{% block title %}Result page{% endblock %}</title>
 
+
 <form method="post" class="row g-3">
-    <div class="px-5 container-md">
+    <div class="px-5 container-xxl">
+        <svg width="800" height="600">
+            {% for machine in dataset["List of machines"] %}
+            <rect x="{{ machine['x'] }}" y="{{ machine['y'] }}" height="{{ machine['h'] }}" width="{{ machine['w'] }}"
+                 style="fill:rgb({{ randint(50,200) }}, {{ randint(50,200) }}, {{ randint(50,200) }})
+                        ;stroke:black;stroke-width:0.5;opacity:0.5" />
+            {% endfor %}
+            <rect x="{{ dataset['Facility']['x'] }}" y="{{ dataset['Facility']['y'] }}"
+                  height="{{ dataset['Facility']['h'] }}" width="{{ dataset['Facility']['w'] }}"
+                 style="fill:none;stroke:black;stroke-width:2;opacity:0.5" />
+        </svg>
+    </div>
+    <div class="container-sm">
+        <button type="submit" class="btn btn-primary" name="create" value="Create">Create</button>
     </div>
 </form>
-
 {% endblock %}

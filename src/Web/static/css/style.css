@@ -5,3 +5,17 @@ h1 {
     padding: 10px;
 }
 
+svg {
+  color: rgb(168, 142, 142);
+  width: 80vw;
+  max-width: 35rem;
+  width: 100%;
+  height: auto;
+  display: block;
+}
+svg#bee {
+  color: hsl(0, 0%, 10%);
+  position: absolute;
+  width: 50px;
+  height: auto;
+}
