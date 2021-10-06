@@ -1,0 +1,39 @@
+{
+  "Count of Machines": 4,
+  "List of machines": [
+    {
+      "Title of machine": "M0",
+      "x": 0,
+      "y": 0,
+      "h": 14,
+      "w": 15
+    },
+    {
+      "Title of machine": "M1",
+      "x": 15,
+      "y": 0,
+      "h": 8,
+      "w": 2
+    },
+    {
+      "Title of machine": "M2",
+      "x": 15,
+      "y": 8,
+      "h": 6,
+      "w": 1
+    },
+    {
+      "Title of machine": "M3",
+      "x": 0,
+      "y": 14,
+      "h": 3,
+      "w": 9
+    }
+  ],
+  "Facility": {
+    "x": 0,
+    "y": 0,
+    "h": 17,
+    "w": 17
+  }
+}

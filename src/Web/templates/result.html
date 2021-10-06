@@ -1,26 +1,38 @@
 {% extends 'base.html' %}
 
-
 {% block content %}
 <title>{% block title %}Result page{% endblock %}</title>
 
-
 <form method="post" class="row g-3">
-    <div class="px-5 container-xxl">
-        <svg width="800" height="600">
+    <!--  -->
+    <div class="px-5 pt-3 container-xxl">
+        <svg width="800" height="500">
+            <!--  -->
             {% for machine in dataset["List of machines"] %}
-            <rect x="{{ machine['x'] * 800/dataset['Facility']['h'] }}" y="{{ machine['y'] * 800/dataset['Facility']['h'] }}"
-                  height="{{ machine['h'] * 800/dataset['Facility']['h'] }}" width="{{ machine['w'] * 800/dataset['Facility']['h'] }}"
-                 style="fill:rgb({{ randint(50,200) }}, {{ randint(50,200) }}, {{ randint(50,200) }})
-                        ;stroke:black;stroke-width:0.5;opacity:0.5" />
+            <rect x="{{ machine['x'] * k }}"
+                  y="{{ machine['y'] * k }}"
+                  height="{{ machine['h'] * k }}"
+                  width="{{ machine['w'] * k }}"
+                  style="fill:rgb({{ randint(50,200) }}, {{ randint(50,200) }}, {{ randint(50,200) }})
+                         ;stroke:black;stroke-width:1;opacity:0.5" />
             {% endfor %}
-            <rect x="{{ dataset['Facility']['x'] }}" y="{{ dataset['Facility']['y'] }}"
-                  height="{{ dataset['Facility']['h'] }}" width="{{ dataset['Facility']['w'] }}"
-                 style="fill:none;stroke:black;stroke-width:2;opacity:0.5" />
+            <!--  -->
+            <rect x="{{ dataset['Facility']['x'] * k }}"
+                  y="{{ dataset['Facility']['y'] * k }}"
+                  height="{{ dataset['Facility']['h'] * k }}"
+                  width="{{ dataset['Facility']['w'] * k }}"
+                  style="fill:none;stroke:black;stroke-width:2;opacity:0.5" />
         </svg>
     </div>
-    <div class="container-sm">
-        <button type="submit" class="btn btn-primary" name="create" value="Create">Create</button>
+    <!--  -->
+    <div class="pt-3 container-sm">
+        <div class="form-group">
+            <h8>Facility Volume: {{ dataset['Facility']['h'] * dataset['Facility']['w'] }}</h8>
+        </div>
+        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+            <button type="submit" class="btn btn-primary" name="create" value="Create">Create</button>
+            <button type="submit" class="btn btn-primary me-md-2" name="creaрte" value="Creрate">Crрeate</button>
+        </div>
     </div>
 </form>
 {% endblock %}

@@ -7,7 +7,7 @@ def generateRandomConfigs(jsonName="test", numMachines="1", maxNumConf="5"):
     """
     Create some json file
     """
-    configs = {"Count of Machine": int(numMachines), "List os machine": list()}
+    configs = {"Count of Machine": int(numMachines), "List of machine": list()}
     for i in range(int(numMachines)):
         randAmount = randint(1, int(maxNumConf))
         machine = {"Title of machine": "M" + str(i), "Amount of configs": randAmount, "Machines": list()}
@@ -15,13 +15,19 @@ def generateRandomConfigs(jsonName="test", numMachines="1", maxNumConf="5"):
         rw = randint(1, 15)
         rS = rh * rw
         for machineCount in range(randAmount):
-            while True:
-                rh = randint(1, 15)
-                rw = rS / rh
-                if type(rw) == int():
-                    break
+            rh = randint(1, 15)
+            for patch in range(30):
+                if patch % 2 == 0:
+                    rh = rh - patch
+                else:
+                    rh = rh + patch
+                if rh > 0:
+                    rw = rS / rh
+                    if modf(rw)[0] == 0.0:
+                        rw = int(rw)
+                        break
             machine["Machines"].append({"h": rh, "w": rw})
-        configs["List os machine"].append(machine)
+        configs["List of machine"].append(machine)
 
     file = open("ConfigPacks/" + jsonName + ".json", "w")
     json.dump(configs, file)

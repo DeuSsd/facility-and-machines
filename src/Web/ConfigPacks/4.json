@@ -1,0 +1,73 @@
+{
+  "Count of Machine": 4,
+  "List of machine": [
+    {
+      "Title of machine": "M0",
+      "Amount of configs": 3,
+      "Machines": [
+        {
+          "h": 1,
+          "w": 21
+        },
+        {
+          "h": 3,
+          "w": 7
+        },
+        {
+          "h": 3,
+          "w": 7
+        }
+      ]
+    },
+    {
+      "Title of machine": "M1",
+      "Amount of configs": 3,
+      "Machines": [
+        {
+          "h": 5,
+          "w": 33
+        },
+        {
+          "h": 3,
+          "w": 55
+        },
+        {
+          "h": 3,
+          "w": 55
+        }
+      ]
+    },
+    {
+      "Title of machine": "M2",
+      "Amount of configs": 1,
+      "Machines": [
+        {
+          "h": 10,
+          "w": 4
+        }
+      ]
+    },
+    {
+      "Title of machine": "M3",
+      "Amount of configs": 4,
+      "Machines": [
+        {
+          "h": 12,
+          "w": 7
+        },
+        {
+          "h": 6,
+          "w": 14
+        },
+        {
+          "h": 4,
+          "w": 21
+        },
+        {
+          "h": 4,
+          "w": 21
+        }
+      ]
+    }
+  ]
+}
