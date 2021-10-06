@@ -1,3 +1,9 @@
+class UnavailableSpace(Exception):
+    pass
+
+class NotExistFacility(Exception):
+    pass
+
 class Object:
     """
     Base class
@@ -121,7 +127,7 @@ class Object:
         ru_point = (x + self.w, y + self.h)
         return [ld_point, lu_point, rd_point, ru_point]
 
-    def check_entry_into_rectangle(self, list_of_point: [tuple]) -> bool:
+    def check_cross_rectangle_sides(self, list_of_point: [tuple]) -> bool:
         """
           y
         |
@@ -140,8 +146,9 @@ class Object:
         x, y = self.get_coors()  # (x,y)
         for point in list_of_point:
             x_t, y_t = point
-            if (x_t > x and x_t < x + self.w) and \
-                    (y_t > y and y_t < y + self.h):
+            # if (x_t > x and x_t < x + self.w) and \
+            #         (y_t > y and y_t < y + self.h):
+            if x_t > x and y_t > y:
                 return True
         return False
 
@@ -245,6 +252,16 @@ class Facility(Object):
     def set_all_mounting_points(self, mounting_points: [tuple]):
         self.__list_of_mounting_points = mounting_points.copy()
 
+    def exclude_collision(self, new_coors: tuple, machine: Machine):
+        copy_machine = machine.copy()
+        self.__place_machine(new_coors, copy_machine)
+        if self.__collision_detect(copy_machine):
+            self.__list_of_mounting_points.add(new_coors)
+            return False
+        else:
+            return True
+
+
     def append_new_machine(self, new_coors: tuple, machine: Machine):
         """
         Append a new instance of class Machine to the list of already existing rectangles objects
@@ -255,13 +272,11 @@ class Facility(Object):
         # TODO if included, then interrupt
         copy_machine = machine.copy()
         self.__place_machine(new_coors, copy_machine)  # TODO refactor this function: delete and add same coors
-        if not self.__collision_detect(copy_machine):
-            self.list_of_machine.append(copy_machine)
-            self.__find_new_mounting_points(copy_machine)
-            self.__calculate_new_sides(copy_machine)
-            self.get_square()
-        else:
-            self.__list_of_mounting_points.add(new_coors)
+        self.list_of_machine.append(copy_machine)
+        self.__find_new_mounting_points(copy_machine)
+        self.__calculate_new_sides(copy_machine)
+        self.get_square()
+
         # machine.show()
         # self.show()
 
@@ -304,7 +319,7 @@ class Facility(Object):
     def __collision_detect(self, new_machine: Machine) -> bool:
         corners_list = new_machine.get_all_corner_coors()
         for machine in self.list_of_machine:
-            if machine.check_entry_into_rectangle(corners_list):
+            if machine.check_cross_rectangle_sides(corners_list):
                 return True
         return False
 
@@ -337,8 +352,11 @@ class CollectionOfFacilities:
         return self.__collection_of_facilities.pop(0)
 
 
+    def empty(self):
+        return not bool(self.__collection_of_facilities)
+
 if __name__ == "__main__":
     a = Machine("M", x=0, y=0, h=2, w=3)
     b = Machine("M", x=-3, y=0, h=2, w=3)
-    t = a.check_entry_into_rectangle(b.get_all_corner_coors())
+    t = a.check_cross_rectangle_sides(b.get_all_corner_coors())
     print(t)
