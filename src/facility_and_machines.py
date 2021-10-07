@@ -1,8 +1,10 @@
 class UnavailableSpace(Exception):
     pass
 
+
 class NotExistFacility(Exception):
     pass
+
 
 class Object:
     """
@@ -148,7 +150,6 @@ class Object:
         ru_point = (x + self.w, y + self.h)
         return [ld_point, lu_point, rd_point, ru_point]
 
-
     def check_cross_rectangle_sides(self, list_of_point: [tuple]) -> bool:
         """
           y
@@ -166,9 +167,9 @@ class Object:
         """
         A_LD, A_RU = self.get_diag_corner_coors()
         B_LD, B_RU = list_of_point
-        print([ A_LD, A_RU],list_of_point)
-        ax1, ay1, ax2, ay2 = A_LD[0],A_LD[1], A_RU[0],A_RU[1]# rectangle А
-        bx1, by1, bx2, by2 =  B_LD[0],B_LD[1], B_RU[0],B_RU[1]  # rectangle B
+        # print([A_LD, A_RU], list_of_point)
+        ax1, ay1, ax2, ay2 = A_LD[0], A_LD[1], A_RU[0], A_RU[1]  # rectangle А
+        bx1, by1, bx2, by2 = B_LD[0], B_LD[1], B_RU[0], B_RU[1]  # rectangle B
 
         # x-coors of A and B
         xA = [ax1, ax2]
@@ -179,11 +180,11 @@ class Object:
         yB = [by1, by2]
 
         # if general square is not exist
-        if max(xA) < min(xB) or max(yA) < min(yB) or min(yA) > max(yB):
+        if max(xA) <= min(xB) or max(yA) <= min(yB) or min(yA) >= max(yB):
             return False  # not crossing
 
         # if general square is exist
-        elif max(xA) > min(xB) and min(xA) < min(xB):
+        elif max(xA) >= min(xB) and min(xA) <= min(xB):
             dx = max(xA) - min(xB)
             return True  # crossing
         else:
@@ -289,15 +290,8 @@ class Facility(Object):
     def set_all_mounting_points(self, mounting_points: [tuple]):
         self.__list_of_mounting_points = mounting_points.copy()
 
-    # def exclude_collision(self, new_coors: tuple, machine: Machine):
-    #     copy_machine = machine.copy()
-    #     self.__place_machine(new_coors, copy_machine)
-    #     if self.__collision_detect(copy_machine):
-    #         self.__list_of_mounting_points.add(new_coors)
-    #         return False
-    #     else:
-    #         return True
-
+    def detect_collision(self, machine: Machine):
+        return self.__collision_detect(machine)
 
     def append_new_machine(self, new_coors: tuple, machine: Machine):
         """
@@ -308,16 +302,20 @@ class Facility(Object):
         """
         # TODO if included, then interrupt
         copy_machine = machine.copy()
-        copy_machine = self.__place_machine(new_coors, copy_machine)  # TODO refactor this function: delete and add same coors
-        print(">>>",self.__collision_detect(copy_machine))
-        if self.__collision_detect(copy_machine):
+        copy_machine = self.__place_machine(new_coors,copy_machine)
+        # print(">>>", self.__collision_detect(copy_machine))
+        if not self.__collision_detect(copy_machine):
+            # print("False", len(self.list_of_machine))
             self.list_of_machine.append(copy_machine)
             self.__find_new_mounting_points(copy_machine)
             self.__calculate_new_sides(copy_machine)
             self.get_square()
+            return True
         else:
-            self.__list_of_mounting_points.add(new_coors)
-        # machine.show()
+            # print(self.__list_of_mounting_points)
+            self.__append_new_mounting_point(new_coors)
+            # print("True",self.__list_of_mounting_points)
+            return False
         # self.show()
 
     def __append_new_mounting_point(self, new_coors: tuple):
@@ -359,13 +357,24 @@ class Facility(Object):
     def __collision_detect(self, new_machine: Machine) -> bool:
         corners_list = new_machine.get_diag_corner_coors()
         for machine in self.list_of_machine:
-            if machine.check_cross_rectangle_sides(corners_list):
-                return True
+            if machine is new_machine:
+                continue
+            else:
+                if machine.check_cross_rectangle_sides(corners_list):
+                    return True
+
         return False
+
 
 class CollectionOfFacilities:
     def __init__(self):
         self.__collection_of_facilities = []
+
+    def __copy__(self):
+        copy_facilitys = []
+        for facility in self.__collection_of_facilities:
+            copy_facilitys.append(facility.copy())
+        return copy_facilitys
 
     def sort(self):
         self.__collection_of_facilities.sort()
@@ -383,20 +392,22 @@ class CollectionOfFacilities:
             print("")
             for el in item.list_of_machine:
                 print(el.title, el.h, el.w, el.get_coors())
-            # item.show()
 
-    # def __del__(self): #TODO maybe should realise
 
     def get_best_choose(self):
+
+        # self.delete_wrong_facility()
+        # print(len(self.__collection_of_facilities),"dsd")
+        # self.show()
         self.__collection_of_facilities.sort()
         return self.__collection_of_facilities.pop(0)
-
 
     def empty(self):
         return not bool(self.__collection_of_facilities)
 
+
 if __name__ == "__main__":
-    a = Machine("M", x=0, y=0, h=2, w=3)
-    b = Machine("M", x=-3, y=0, h=2, w=3)
-    t = a.check_cross_rectangle_sides(b.get_all_corner_coors())
+    a = Machine("M", x=1, y=-1, h=10, w=20)
+    b = Machine("M", x=0, y=2, h=2, w=2)
+    t = a.check_cross_rectangle_sides(b.get_diag_corner_coors())
     print(t)

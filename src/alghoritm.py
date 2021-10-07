@@ -10,20 +10,20 @@ def optimize(machine_list: CollectionOfMachines) -> Facility:
         # config.get_info() ####
 
         best_facility = Facility()
-        best_facility.append_new_machine((0, 0), config)
-        for machine in machine_list.machines:
-            machine = machine_list.machines[machine]
-            # print(machine, type(machine), id(machine))
-            best_facility = find_best_facility(machine, best_facility)
-        # print("BB")
-        # for el in best_facility.list_of_machine:
-        #     print(el.title, el.h, el.w, el.get_coors())
-        # best_facility.show()
-        # print("FF")
-        collection_of_facilites.append_new_facility(best_facility)
-        # print("=")
-        # collection_of_facilites.show()
-        # print("=")
+        if best_facility.append_new_machine((0, 0), config):
+            for machine in machine_list.machines:
+                machine = machine_list.machines[machine]
+                # print(machine, type(machine), id(machine))
+                best_facility = find_best_facility(machine, best_facility)
+            # print("BB")
+            # for el in best_facility.list_of_machine:
+            #     print(el.title, el.h, el.w, el.get_coors())
+            # best_facility.show()
+            # print("FF")
+            collection_of_facilites.append_new_facility(best_facility)
+            # print("=")
+            # collection_of_facilites.show()
+            # print("=")
     best_facility = collection_of_facilites.get_best_choose()
     return best_facility
 
@@ -72,13 +72,13 @@ def find_best_facility_place(config: Machine, facility: Facility):
         facility_variate = facility.copy()
         # print("bruteforce")
         # print(point)
-        facility_variate.append_new_machine(point, config)
+        if facility_variate.append_new_machine(point, config):
 
-        # print("--> ", end="")
-        # config.get_info()
-        # facility_variate.get_info()
+            # print("--> ", end="")
+            # config.get_info()
+            # facility_variate.get_info()
 
-        local_collection_of_facilites.append_new_facility(facility_variate)
+            local_collection_of_facilites.append_new_facility(facility_variate)
     best_facility = local_collection_of_facilites.get_best_choose()
     return best_facility
 
