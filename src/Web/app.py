@@ -35,8 +35,6 @@ def index():
             files = glob.glob("./ConfigPacks/*.json")
         elif "test" in request.form:
             return render_template('test.html')
-        elif "show_parameters" in request.form:
-            par_vis = True
 
 
 

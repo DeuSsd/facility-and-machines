@@ -12,10 +12,16 @@ def generateRandomConfigs(jsonName="test", numMachines="1", maxNumConf="5"):
         randAmount = randint(1, int(maxNumConf))
         machine = {"Title of machine": "M" + str(i), "Amount of configs": randAmount, "Machines": list()}
         rh = randint(1, 15)
+        rh_list = list()
         rw = randint(1, 15)
+        rw_list = list()
         rS = rh * rw
-        for machineCount in range(randAmount):
+        for confCount in range(randAmount):
             rh = randint(1, 15)
+            if rh in rh_list:
+                break
+            else:
+                rh_list.append(rh)
             for patch in range(30):
                 if patch % 2 == 0:
                     rh = rh - patch
@@ -26,6 +32,10 @@ def generateRandomConfigs(jsonName="test", numMachines="1", maxNumConf="5"):
                     if modf(rw)[0] == 0.0:
                         rw = int(rw)
                         break
+            if rw in rw_list:
+                break
+            else:
+                rw_list.append(rw)
             machine["Machines"].append({"h": rh, "w": rw})
         configs["List of machine"].append(machine)
 
