@@ -5,5 +5,8 @@
 src/__pycache__/
 *.py[cod]
 
+
+*.json
+
 input.json
 output.json
