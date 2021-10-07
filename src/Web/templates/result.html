@@ -5,7 +5,7 @@
 
 <form method="post" class="row g-3">
     <!--  -->
-    <div class="px-5 pt-3 container-xxl">
+    <div class="px-3 pt-3 container-xl">
         <svg width="800" height="500">
             <!--  -->
             {% for machine in dataset["List of machines"] %}
@@ -15,6 +15,15 @@
                   width="{{ machine['w'] * k }}"
                   style="fill:rgb({{ randint(50,200) }}, {{ randint(50,200) }}, {{ randint(50,200) }})
                          ;stroke:black;stroke-width:1;opacity:0.5" />
+            <text x="{{ (machine['x'] + (machine['w'] / 2)) * k - 4 }}"
+                  y="{{ machine['y'] * k + 20 }}"
+                  class="small">{{ machine['h'] }}</text>
+            <text x="{{ machine['x'] * k + 5 }}"
+                  y="{{ (machine['y'] + (machine['h'] / 2)) * k + 4 }}"
+                  class="small">{{ machine['w'] }}</text>
+            <text x="{{ (machine['x'] + (machine['w'] / 2)) * k - 4 }}"
+                  y="{{ (machine['y'] + (machine['h'] / 2)) * k + 4 }}"
+                  class="small">{{ machine['Title of machine'] }}</text>
             {% endfor %}
             <!--  -->
             <rect x="{{ dataset['Facility']['x'] * k }}"
@@ -25,13 +34,25 @@
         </svg>
     </div>
     <!--  -->
-    <div class="pt-3 container-sm">
-        <div class="form-group">
-            <h8>Facility Volume: {{ dataset['Facility']['h'] * dataset['Facility']['w'] }}</h8>
+    <div class="pt-3 container-auto">
+        <div class="form-group"><h8>Facility area: {{ dataset['Facility']['h'] * dataset['Facility']['w'] }}</h8></div>
+        <div class="d-grid d-md-flex justify-content-center">
+            <button type="submit" class="btn btn-primary" name="show_parameters">Show parameters</button>
         </div>
-        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-            <button type="submit" class="btn btn-primary" name="create" value="Create">Create</button>
-            <button type="submit" class="btn btn-primary me-md-2" name="creaрte" value="Creрate">Crрeate</button>
+        <div class="pt-5 form-group"><h8>Go through algorithm</h8></div>
+        <div class="d-grid d-md-flex justify-content-center">
+            <button type="submit" class="btn btn-primary" name="algorithm_start">
+                <span class="visually-hidden">Algorithm start</span>
+            </button>
+        </div>
+
+        <div class="btn-group d-grid d-md-flex justify-content-center" role="group" aria-label="Basic outlined example">
+            <button name="algorithm_start" type="button" class="btn btn-outline-primary">Prev</button>
+            <button name="test" type="submit" class="btn btn-outline-primary">Next</button>
+        </div>
+        <div class="btn-group d-grid d-md-flex justify-content-center" role="group" aria-label="Basic outlined example">
+            <button name="algorithm_start" type="button" class="btn btn-outline-primary">Prev Machine</button>
+            <button name="test" type="submit" class="btn btn-outline-primary">Next machine</button>
         </div>
     </div>
 </form>

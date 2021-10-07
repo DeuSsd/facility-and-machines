@@ -20,31 +20,37 @@ def index():
     files = glob.glob("./ConfigPacks/*.json")
     if request.method == 'POST':
         if "solution" in request.form:
-            # Где-то тут надо получить результирующий json
-            path_input = request.form['datasetName']
-            # path_output = "U:/facility-and-machines/output.json"
-            path_output = "./ResultPacks/" + request.form['datasetName'][14:]
-            # configs_data = load_machines_from_json(path_input)
-            configs_data = load_machines_from_json(path_input)
-            best_facility = optimize(configs_data)
-            write_machines_to_json(path_output, best_facility)
-
-            json = read_json(path_output) # result
+            json = find_result()
             if json['Facility']['w'] > json['Facility']['h']:
                 k = 800 / json['Facility']['w']
             else:
                 k = 500 / json['Facility']['h']
-            return render_template('result.html', dataset=json, randint=randint, k=k)
+            par_vis = False
+            return render_template('result.html', dataset=json, randint=randint, k=k, par_vis=par_vis)
         elif "create" in request.form:
             generateRandomConfigs(request.form['ConfigurationPackName'],
                                   request.form['NumberOfMachines'],
                                   request.form['MaxNumConf'])
 
             files = glob.glob("./ConfigPacks/*.json")
+        elif "test" in request.form:
+            return render_template('test.html')
+        elif "show_parameters" in request.form:
+            par_vis = True
+
+
 
     return render_template('index.html', files=files)
 
+def find_result() -> dict:
+    path_input = request.form['datasetName']
+    path_output = "./ResultPacks/" + request.form['datasetName'][14:]
+    configs_data = load_machines_from_json(path_input)
+    best_facility = optimize(configs_data)
+    write_machines_to_json(path_output, best_facility)
 
+    json_result = read_json(path_output)  # result
+    return json_result
 
 if __name__ == '__main__':
     app.run()
