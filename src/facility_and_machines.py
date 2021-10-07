@@ -260,8 +260,11 @@ class CollectionOfMachines:
         return machine.title in self.machines.keys()
 
     def get_title_large_of_machines(self):
-
-        large_mashine = {"title":"","S":0}
+        """
+        Find the large Machine, which will be used on initiate optimise algorithm
+        :return: Largest machine's title
+        """
+        large_machine = {"title": "", "S": 0}
 
         for machine_title in self.machines.keys():
             square = 0
@@ -269,10 +272,10 @@ class CollectionOfMachines:
                 S = machine.get_square()
                 if S >= square:
                     square = S
-            if square >= large_mashine["S"]:
-                large_mashine["title"] = machine_title
-                large_mashine["S"] = square
-        return large_mashine["title"]
+            if square >= large_machine["S"]:
+                large_machine["title"] = machine_title
+                large_machine["S"] = square
+        return large_machine["title"]
 
     def empty(self):
         return bool(self.machines)

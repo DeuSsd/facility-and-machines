@@ -2,14 +2,12 @@ from src.facility_and_machines import Machine, Facility, CollectionOfFacilities,
 
 
 def optimize(machine_list: CollectionOfMachines) -> Facility:
-    machines_name = list(machine_list.machines.keys())
     # title = machines_name[0]
     title = machine_list.get_title_large_of_machines()
     machines_configs = machine_list.machines.pop(title)
-    collection_of_facilites = CollectionOfFacilities()
+    collection_of_facilities = CollectionOfFacilities()
     for config in machines_configs:
         # config.get_info() ####
-
         best_facility = Facility()
         if best_facility.append_new_machine((0, 0), config):
             for machine in machine_list.machines:
@@ -21,12 +19,13 @@ def optimize(machine_list: CollectionOfMachines) -> Facility:
             #     print(el.title, el.h, el.w, el.get_coors())
             # best_facility.show()
             # print("FF")
-            collection_of_facilites.append_new_facility(best_facility)
+            yield best_facility
+            collection_of_facilities.append_new_facility(best_facility)
             # print("=")
-            # collection_of_facilites.show()
+            # collection_of_facilities.show()
             # print("=")
-    best_facility = collection_of_facilites.get_best_choose()
-    return best_facility
+    best_facility = collection_of_facilities.get_best_choose()
+    yield best_facility
 
 
 def find_best_facility(machine: [Machine], facility: Facility):
