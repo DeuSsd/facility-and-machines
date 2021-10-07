@@ -101,6 +101,27 @@ class Object:
     def show(self):
         print(id(self), self.get_coors(), self.get_sides(), self.get_square(), type(self))
 
+    def get_diag_corner_coors(self) -> [tuple]:
+        '''
+        ld_point - left-down point
+        ru_point - right-up point
+
+        y
+        |
+        |
+        |     --------------o <- this ru_point (x1,y1)  x1 = x+w, y1 = y+h
+        | h   |             |
+        |     |             |
+        |     o--------------
+        |         w
+        0--------------------------------> x
+        :return: list of corners point [LD, RU]
+        '''
+        x, y = self.get_coors()
+        ld_point = (x, y)
+        ru_point = (x + self.w, y + self.h)
+        return [ld_point, ru_point]
+
     def get_all_corner_coors(self) -> [tuple]:
         '''
         ld_point - left-down point
@@ -127,30 +148,46 @@ class Object:
         ru_point = (x + self.w, y + self.h)
         return [ld_point, lu_point, rd_point, ru_point]
 
+
     def check_cross_rectangle_sides(self, list_of_point: [tuple]) -> bool:
         """
           y
-        |
-        |
-        |     o-------------o          bounders:
-        | h   |             |          x < x_t < x+w
-        |     | (x,y)       |         y < y_t < y+h
-        |     o-------------o
-        |         w
+        |           ---------------o
+        |           |              |   <-  machine b
+        |     ------|-------o RU   |
+        | h   |     o-------|-------
+        |     |             |
+        |     o--------------    <-  machine a
+        |     LD    w
         0--------------------------------> x
 
-        :param list_of_point: list of corners point [LD, LU, RD, RU]
+        :param list_of_point: list of corners point [LD, RU]
         :return: if any point included, then return true
         """
+        A_LD, A_RU = self.get_diag_corner_coors()
+        B_LD, B_RU = list_of_point
+        print([ A_LD, A_RU],list_of_point)
+        ax1, ay1, ax2, ay2 = A_LD[0],A_LD[1], A_RU[0],A_RU[1]# rectangle А
+        bx1, by1, bx2, by2 =  B_LD[0],B_LD[1], B_RU[0],B_RU[1]  # rectangle B
 
-        x, y = self.get_coors()  # (x,y)
-        for point in list_of_point:
-            x_t, y_t = point
-            # if (x_t > x and x_t < x + self.w) and \
-            #         (y_t > y and y_t < y + self.h):
-            if x_t > x and y_t > y:
-                return True
-        return False
+        # x-coors of A and B
+        xA = [ax1, ax2]
+        xB = [bx1, bx2]
+
+        # y-coors of A and B
+        yA = [ay1, ay2]
+        yB = [by1, by2]
+
+        # if general square is not exist
+        if max(xA) < min(xB) or max(yA) < min(yB) or min(yA) > max(yB):
+            return False  # not crossing
+
+        # if general square is exist
+        elif max(xA) > min(xB) and min(xA) < min(xB):
+            dx = max(xA) - min(xB)
+            return True  # crossing
+        else:
+            return True  # crossing
 
 
 class Machine(Object):
@@ -252,14 +289,14 @@ class Facility(Object):
     def set_all_mounting_points(self, mounting_points: [tuple]):
         self.__list_of_mounting_points = mounting_points.copy()
 
-    def exclude_collision(self, new_coors: tuple, machine: Machine):
-        copy_machine = machine.copy()
-        self.__place_machine(new_coors, copy_machine)
-        if self.__collision_detect(copy_machine):
-            self.__list_of_mounting_points.add(new_coors)
-            return False
-        else:
-            return True
+    # def exclude_collision(self, new_coors: tuple, machine: Machine):
+    #     copy_machine = machine.copy()
+    #     self.__place_machine(new_coors, copy_machine)
+    #     if self.__collision_detect(copy_machine):
+    #         self.__list_of_mounting_points.add(new_coors)
+    #         return False
+    #     else:
+    #         return True
 
 
     def append_new_machine(self, new_coors: tuple, machine: Machine):
@@ -271,12 +308,15 @@ class Facility(Object):
         """
         # TODO if included, then interrupt
         copy_machine = machine.copy()
-        self.__place_machine(new_coors, copy_machine)  # TODO refactor this function: delete and add same coors
-        self.list_of_machine.append(copy_machine)
-        self.__find_new_mounting_points(copy_machine)
-        self.__calculate_new_sides(copy_machine)
-        self.get_square()
-
+        copy_machine = self.__place_machine(new_coors, copy_machine)  # TODO refactor this function: delete and add same coors
+        print(">>>",self.__collision_detect(copy_machine))
+        if self.__collision_detect(copy_machine):
+            self.list_of_machine.append(copy_machine)
+            self.__find_new_mounting_points(copy_machine)
+            self.__calculate_new_sides(copy_machine)
+            self.get_square()
+        else:
+            self.__list_of_mounting_points.add(new_coors)
         # machine.show()
         # self.show()
 
@@ -317,7 +357,7 @@ class Facility(Object):
         return self.__copy__()
 
     def __collision_detect(self, new_machine: Machine) -> bool:
-        corners_list = new_machine.get_all_corner_coors()
+        corners_list = new_machine.get_diag_corner_coors()
         for machine in self.list_of_machine:
             if machine.check_cross_rectangle_sides(corners_list):
                 return True
