@@ -259,6 +259,21 @@ class CollectionOfMachines:
         """
         return machine.title in self.machines.keys()
 
+    def get_title_large_of_machines(self):
+
+        large_mashine = {"title":"","S":0}
+
+        for machine_title in self.machines.keys():
+            square = 0
+            for machine in self.machines[machine_title]:
+                S = machine.get_square()
+                if S >= square:
+                    square = S
+            if square >= large_mashine["S"]:
+                large_mashine["title"] = machine_title
+                large_mashine["S"] = square
+        return large_mashine["title"]
+
     def empty(self):
         return bool(self.machines)
 
@@ -302,7 +317,7 @@ class Facility(Object):
         """
         # TODO if included, then interrupt
         copy_machine = machine.copy()
-        copy_machine = self.__place_machine(new_coors,copy_machine)
+        copy_machine = self.__place_machine(new_coors, copy_machine)
         # print(">>>", self.__collision_detect(copy_machine))
         if not self.__collision_detect(copy_machine):
             # print("False", len(self.list_of_machine))
@@ -392,7 +407,6 @@ class CollectionOfFacilities:
             print("")
             for el in item.list_of_machine:
                 print(el.title, el.h, el.w, el.get_coors())
-
 
     def get_best_choose(self):
 
