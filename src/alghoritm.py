@@ -3,7 +3,8 @@ from src.facility_and_machines import Machine, Facility, CollectionOfFacilities,
 
 def optimize(machine_list: CollectionOfMachines) -> Facility:
     machines_name = list(machine_list.machines.keys())
-    title = machines_name[0]
+    # title = machines_name[0]
+    title = machine_list.get_title_large_of_machines()
     machines_configs = machine_list.machines.pop(title)
     collection_of_facilites = CollectionOfFacilities()
     for config in machines_configs:
