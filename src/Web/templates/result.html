@@ -15,16 +15,17 @@
                   width="{{ machine['w'] * k }}"
                   style="fill:rgb({{ randint(50,200) }}, {{ randint(50,200) }}, {{ randint(50,200) }})
                          ;stroke:black;stroke-width:1;opacity:0.5" />
-
+            {% if par_vis is true %}
             <text x="{{ (machine['x'] + (machine['w'] / 2)) * k - 4 }}"
-                  y="{{ machine['y'] * k + 20 }}"
-                  class="invisible" id="rect_text1">{{ machine['h'] }}</text>
+                  y="{{ machine['y'] * k + 15 }}"
+                  class="small" id="rect_text1">{{ machine['w'] }}</text>
             <text x="{{ machine['x'] * k + 5 }}"
                   y="{{ (machine['y'] + (machine['h'] / 2)) * k + 4 }}"
-                  class="small" id="rect_text2">{{ machine['w'] }}</text>
+                  class="small" id="rect_text2">{{ machine['h'] }}</text>
             <text x="{{ (machine['x'] + (machine['w'] / 2)) * k - 4 }}"
                   y="{{ (machine['y'] + (machine['h'] / 2)) * k + 4 }}"
                   class="small" id="rect_text3">{{ machine['Title of machine'] }}</text>
+            {% endif %}
             {% endfor %}
             <!--  -->
             <rect x="{{ dataset['Facility']['x'] * k }}"
@@ -38,11 +39,15 @@
     <div class="pt-3 container-auto">
         <div class="form-group"><h8>Facility area: {{ dataset['Facility']['h'] * dataset['Facility']['w'] }}</h8></div>
         <div class="d-grid d-md-flex justify-content-center">
-            <button type="button" class="btn btn-primary" name="show_parameters"
-                    onclick="document.getElementById('rect_text1').className = 'invisible';
-                             document.getElementById('rect_text2').className = 'invisible';
-                             document.getElementById('rect_text3').className = 'invisible';">Show parameters</button>
+            {% if par_vis is true %}
+            <button type="submit" class="btn btn-primary" name="show_parameters" value="hide">
+                Hide parameters</button>
+            {% else %}
+            <button type="submit" class="btn btn-primary" name="show_parameters" value="show">
+                Show parameters</button>
+            {% endif %}
         </div>
+        <!--
         <div class="pt-5 form-group"><h8>Go through algorithm</h8></div>
         <div class="d-grid d-md-flex justify-content-center">
             <button type="submit" class="btn btn-primary" name="algorithm_start">Algorithm start</button>
@@ -56,6 +61,7 @@
             <button name="algorithm_start" type="button" class="btn btn-outline-primary">Prev Machine</button>
             <button name="test" type="submit" class="btn btn-outline-primary">Next machine</button>
         </div>
+        -->
     </div>
 </form>
 {% endblock %}
